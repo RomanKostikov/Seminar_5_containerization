@@ -1,0 +1,51 @@
+1. connect ssh:
+bridge
+roman2 ip: 192.168.0.108
+2. docker:
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+3. docker-compose1:
+version: ‘3.9’
+
+services:
+
+  db:
+    image: mariadb:10.10.2
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - 6080:8080
+4. docker-compose2:
+version: '3.9'
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+#      MYSQL_DATABASE: 'db'
+#      MYSQL_USER: 'user'
+#      MYSQL_PASSWORD: '54321'
+      MYSQL_ROOT_PASSWORD: '12345'
+   # ports:
+    #  - '3306:3306'
+#    volumes:
+#      - my-db:/var/lib/mysql
+#volumes:
+ # my-db:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 80:80 # менять необходимо порт, если 80 занят!!!
+    environment:
+ #     MYSQL_USERNAME: 'user'
+      MYSQL_ROOT_PASSWORD: '12345'
+4. docker swarm leave --force - удалить единственную node;
+5. docker swarm
+а) ssh roman@192.168.0.107
+б) ssh roman2@192.168.0.108
+docker swarm join --token SWMTKN-1-3rrdudsiyvfcdf1y74vlaem6q0ce6r1ng5p868i3hmqlg3pk2a-eoa169t2kohn10gcyrz0n93qs 10.0.2.15:2377
